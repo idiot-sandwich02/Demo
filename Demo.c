@@ -133,3 +133,41 @@ int main() {
     free(pairs);
     return 0;
 }
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+void map_2d_array(void *arr, int count, int elem_size, void (*func)(void *elem, void *result), void *output) {
+    for (int i = 0; i < count; i++) {
+        void *elemAddress = (char *)arr + i * elem_size;
+        void *resultAddress = (char *)output + i * sizeof(int);
+        func(elemAddress, resultAddress);
+    }
+}
+
+void findMaxInPair(void *elem, void *result) {
+    int *pair = (int *)elem;
+    int *maxResult = (int *)result;
+    *maxResult = (pair[0] > pair[1]) ? pair[0] : pair[1];
+}
+
+int main() {
+    int pairs[3][2] = {
+        {1, 5},
+        {9, 4},
+        {2, 8}
+    };
+
+    int output[3]; // this will hold the max values
+
+    map_2d_array(pairs, 3, sizeof(pairs[0]), findMaxInPair, output);
+
+    printf("Max values from each pair:\n");
+    for (int i = 0; i < 3; i++) {
+        printf("%d ", output[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
