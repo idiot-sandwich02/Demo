@@ -79,3 +79,57 @@ int main(){
         printf("%d\n", data[i]);
     }
 }
+
+
+
+//3
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef struct {
+    int first;
+    int second;
+} Pair;
+
+// Function to create pairs from an int array.
+// For simplicity, we create pairs of consecutive elements.
+Pair* create_pairs(int *arr, int count, int *pair_count) {
+    *pair_count = count / 2;  // number of pairs (ignore last if odd)
+    Pair *pairs = malloc(*pair_count * sizeof(Pair));
+
+    for (int i = 0; i < *pair_count; i++) {
+        pairs[i].first = arr[2*i];
+        pairs[i].second = arr[2*i + 1];
+    }
+    return pairs;
+}
+
+// Function to compare pairs and print maximum of each
+void compare_and_print_max(void *arr, int count, int elem_size, void(*func)(void *elem)){
+    for (int i = 0; i < count; i++) {
+        void *elemAddress = ((char*)arr) + i * elem_size;
+        func(elemAddress);
+    }
+}
+
+// Function to print max of a single pair
+void print_max_of_pair(void *element) {
+    Pair *p = (Pair *)element;
+    int max = (p->first > p->second) ? p->first : p->second;
+    printf("Max of pair (%d, %d) is %d\n", p->first, p->second, max);
+}
+
+int main() {
+    int data[] = {1, 5, 3, 4, 2, 7};  // example array with 6 elements
+    int pair_count;
+
+    // Create pairs from the array
+    Pair *pairs = create_pairs(data, 6, &pair_count);
+
+    // Compare pairs and print max of each pair
+    compare_and_print_max(pairs, pair_count, sizeof(Pair), print_max_of_pair);
+
+    free(pairs);
+    return 0;
+}
